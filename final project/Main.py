@@ -4,16 +4,17 @@ import tkinter as tk
 from tkinter import ttk
 from PIL import Image, ImageTk  # for images
 from Doctor import Doctor
+from Medication import Medication
 from Patient import Patient
 from Treatment import Treatment
 from tkinter import messagebox
 
-
-# setting data bases
+# setting global data bases
 patientList = []
 doctorList = []
 doctorNameList = []
 treatmentList = []
+
 
 # search methods
 def searchPatientByName(pList, given_name):
@@ -22,11 +23,13 @@ def searchPatientByName(pList, given_name):
             return patient
     return None
 
+
 def searchDoctorByName(dList, given_name):
     for doctor in dList:
         if doctor.fullName == given_name:
             return doctor
     return None
+
 
 def searchTreatmentBynum(tList, given_id):
     for treatment in tList:
@@ -67,12 +70,15 @@ def build_home_screen(doct, home_frame, show_login):
     )
     greet_label.place(x=40, y=10)
 
+    # sidebar menu
     right_frame = tk.Frame(home_frame, bg="light blue", width=int(width * 0.2))
     right_frame.pack(side="right", fill="y")
 
+    # details request and information menu
     left_frame0 = tk.Frame(home_frame, bg="light green", width=int(width * 0.85))
     left_frame0.pack(side="left", fill="both", expand=True)
 
+    # leave one page to the other
     def clear_left_frame():
         for widget in left_frame0.winfo_children():
             widget.destroy()
@@ -80,10 +86,13 @@ def build_home_screen(doct, home_frame, show_login):
     # ---------- HOME BUTTON SYSTEM (ONE BUTTON ONLY) ----------
     home_btn = None
 
+    # show only when not on home page
     def hide_home_button():
         nonlocal home_btn
         if home_btn is not None:
             home_btn.place_forget()
+
+############################################################################ begining of home page definition
 
     def left_frame_home():
         clear_left_frame()
@@ -115,12 +124,12 @@ def build_home_screen(doct, home_frame, show_login):
             last_t = max(my_treatments, key=lambda x: x.TreatDate)
             last_text = f"{last_t.TreatDate.strftime('%d/%m %H:%M')} - {last_t.Patient.fullName}"
 
-        # title
+        # home page title
         tk.Label(frame, text="Control Panel", font=("Arial", 18, "bold"), bg="light green").place(x=150, y=15)
         tk.Label(frame, text=f"Today: {datetime.now().strftime('%d/%m/%Y')}",
-                font=("Arial", 11), bg="light green").place(x=185, y=45)
+                 font=("Arial", 11), bg="light green").place(x=185, y=45)
 
-        # helper to draw a "card"
+        # draw a "card" helper. cards contain details
         def card(x, y, title_txt, value_txt, w=200, h=80, big_font=18):
             c = tk.Frame(frame, bg="white", bd=2, relief="groove")
             c.place(x=x, y=y, width=w, height=h)
@@ -137,7 +146,7 @@ def build_home_screen(doct, home_frame, show_login):
 
         # --- cards layout (fits 500x500) ---
         # row 1
-        card(30, 90,  "Treatments Today", str(len(my_treatments_today)), w=200, h=80)
+        card(30, 90, "Treatments Today", str(len(my_treatments_today)), w=200, h=80)
         card(260, 90, "My Patients", str(len(treated_patients)), w=200, h=80)
 
         # row 2
@@ -148,7 +157,7 @@ def build_home_screen(doct, home_frame, show_login):
 
         # recent treatments (last 5)
         tk.Label(frame, text="Recent Treatments (last 5)", font=("Arial", 11, "bold"),
-                bg="light green").place(x=30, y=300)
+                 bg="light green").place(x=30, y=300)
 
         recent = sorted(my_treatments, key=lambda x: x.TreatDate, reverse=True)[:5]
         y = 330
@@ -161,6 +170,7 @@ def build_home_screen(doct, home_frame, show_login):
                 tk.Label(frame, text=txt, bg="light green", anchor="w", font=("Arial", 10)).place(x=30, y=y, width=440)
                 y += 22
 
+    # show when not on home page
     def show_home_button():
         nonlocal home_btn
         if home_btn is None:
@@ -173,20 +183,12 @@ def build_home_screen(doct, home_frame, show_login):
                 command=left_frame_home
             )
 
-        # צד ימין למעלה בתוך הפס הכתום
+        # home button placing, top right corner.
         home_btn.place(relx=0.97, y=8, anchor="ne", width=70, height=28)
 
-    # --- תזכורת שימוש:
-    # בתוך כל left_frameX שהוא לא הבית -> תוסיף show_home_button()
-    # בתוך left_frame_home() -> יש hide_home_button()
-
-    # ---- כאן בהמשך יבואו כפתורי ה-sidebar וה-left_frame1/2/3... שלך ----
-
-    # חשוב: כשנכנסים למערכת, תציג ישר את מסך הבית
     left_frame_home()
 
-    
-    ##################################################################### begining of add treatment from sidebar menu
+######################################################################### begining of add treatment from sidebar menu
 
     # add treatment button
     btn1 = tk.Button(right_frame, text="Add Treatment", width=12, bg="white", command=lambda: left_frame1())
@@ -237,8 +239,6 @@ def build_home_screen(doct, home_frame, show_login):
         TAreaEnt = tk.Entry(left_frame1, bg="light blue", fg="black", font=("Arial", 12))
         TAreaEnt.place(x=150, y=290, width=width * 0.4, height=height * 0.08)
 
-     
-
         # save details button
         def save_treatment():
             # validation
@@ -275,7 +275,7 @@ def build_home_screen(doct, home_frame, show_login):
         Savebtn = tk.Button(left_frame1, text="Save Treatment", command=save_treatment)
         Savebtn.place(x=70, y=360, width=width * 0.4, height=height * 0.08)
 
-    #################################################################### end of Add treatment menu and begining of treatment History menu
+######################################################################## end of Add treatment menu and begining of treatment History menu
 
     # treatment history button
     btn2 = tk.Button(right_frame, text="History", width=12, bg="white", command=lambda: left_frame2())
@@ -293,7 +293,8 @@ def build_home_screen(doct, home_frame, show_login):
         title.pack(pady=10)
 
         # filter treatments by logged-in doctor and sort by date (newest first)
-        doctor_treatments = sorted([t for t in treatmentList if t.Doctor == doct], key=lambda t: t.TreatDate, reverse=True)
+        doctor_treatments = sorted([t for t in treatmentList if t.Doctor == doct], key=lambda t: t.TreatDate,
+                                   reverse=True)
 
         if not doctor_treatments:
             tk.Label(frame, text="No treatments found.", font=("Arial", 12), bg="light green").pack(pady=20)
@@ -314,12 +315,12 @@ def build_home_screen(doct, home_frame, show_login):
             card = tk.Frame(scroll_frame, bg="white", bd=2, relief="groove")
             card.pack(fill="x", padx=20, pady=6)
             tk.Label(card, text=f"Date: {t.TreatDate.strftime('%d/%m/%Y')}", font=("Arial", 10, "bold"),
-                    bg="white").pack(anchor="w", padx=10, pady=(5, 0))
+                     bg="white").pack(anchor="w", padx=10, pady=(5, 0))
             tk.Label(card, text=f"Patient: {t.Patient.fullName}", bg="white").pack(anchor="w", padx=10)
             tk.Label(card, text=(f"Treatment: {t.TreatName}\n" f"Reason: {t.TreatReason}\n" f"Area: {t.TreatArea}"),
-                    bg="white", justify="left", wraplength=380).pack(anchor="w", padx=10, pady=(0, 5))
+                     bg="white", justify="left", wraplength=380).pack(anchor="w", padx=10, pady=(0, 5))
 
-    #################################################################### end of treat History menu and begining of Search Patient menu
+######################################################################## end of treat History menu and begining of Search Patient menu
 
     # search patient button
     btn3 = tk.Button(right_frame, text="Patients", width=12, bg="white", command=lambda: left_frame3())
@@ -346,14 +347,14 @@ def build_home_screen(doct, home_frame, show_login):
                     doctor_patients.append(p)
 
         if not doctor_patients:
-            tk.Label(frame, text="No patients found for this doctor.", font=("Arial", 12), bg="light green").pack(pady=20)
+            tk.Label(frame, text="No patients found for this doctor.", font=("Arial", 12), bg="light green").pack(
+                pady=20)
             return
 
         # scrolling area
         canvas = tk.Canvas(frame, bg="light green", highlightthickness=0)
         scrollbar = tk.Scrollbar(frame, orient="vertical", command=canvas.yview)
         scroll_frame = tk.Frame(canvas, bg="light green")
-
         scroll_frame.bind("<Configure>", lambda e: canvas.configure(scrollregion=canvas.bbox("all")))
         canvas.create_window((0, 0), window=scroll_frame, anchor="nw")
         canvas.configure(yscrollcommand=scrollbar.set)
@@ -366,14 +367,19 @@ def build_home_screen(doct, home_frame, show_login):
             card = tk.Frame(scroll_frame, bg="white", bd=2, relief="groove")
             card.pack(fill="x", padx=20, pady=6)
 
-            tk.Label(card, text=p.fullName, font=("Arial", 12, "bold"), bg="white").pack(anchor="w", padx=10, pady=(5, 0))
+            tk.Label(card, text=p.fullName, font=("Arial", 12, "bold"), bg="white").pack(anchor="w", padx=10,
+                                                                                         pady=(5, 0))
             tk.Label(card, text=f"ID: {p.id}", bg="white").pack(anchor="w", padx=10)
-            tk.Label(card, text=f"Age: {p.age} | Height: {p.height} | Weight: {p.weight}", bg="white").pack(anchor="w", padx=10, pady=(0, 5))
+            tk.Label(card, text=f"Age: {p.age} | Height: {p.height} | Weight: {p.weight}", bg="white").pack(anchor="w",
+                                                                                                            padx=10,
+                                                                                                            pady=(0, 5))
 
-    ##########################################
+######################################################################## end of search Patient menu and begining of New patient menu
 
+    # sidebar button
     btn4 = tk.Button(right_frame, text="New Patient", width=12, bg="white", command=lambda: left_frame4())
     btn4.pack(pady=10)
+
     def left_frame4():
         clear_left_frame()
 
@@ -396,10 +402,10 @@ def build_home_screen(doct, home_frame, show_login):
 
         # entries
         name_ent = tk.Entry(frame, font=("Arial", 12), bg="white")
-        id_ent   = tk.Entry(frame, font=("Arial", 12), bg="white")
-        age_ent  = tk.Entry(frame, font=("Arial", 12), bg="white")
-        h_ent    = tk.Entry(frame, font=("Arial", 12), bg="white")
-        w_ent    = tk.Entry(frame, font=("Arial", 12), bg="white")
+        id_ent = tk.Entry(frame, font=("Arial", 12), bg="white")
+        age_ent = tk.Entry(frame, font=("Arial", 12), bg="white")
+        h_ent = tk.Entry(frame, font=("Arial", 12), bg="white")
+        w_ent = tk.Entry(frame, font=("Arial", 12), bg="white")
 
         row(0, "Full Name", name_ent)
         row(1, "Patient ID", id_ent)
@@ -435,7 +441,6 @@ def build_home_screen(doct, home_frame, show_login):
 
             new_pat = Patient(full_name, pid, age, height_v, weight_v)
             patientList.append(new_pat)
-
             messagebox.showinfo("Success", "Patient added successfully!", parent=frame.winfo_toplevel())
 
             # optional: clear fields after save
@@ -445,20 +450,97 @@ def build_home_screen(doct, home_frame, show_login):
             h_ent.delete(0, tk.END)
             w_ent.delete(0, tk.END)
 
-        save_btn = tk.Button(frame, text="Save Patient", bg="light green", font=("Arial", 12, "bold"), command=save_patient)
+        save_btn = tk.Button(frame, text="Save Patient", bg="light green", font=("Arial", 12, "bold"),
+                             command=save_patient)
         save_btn.place(x=ex, y=y0 + 5 * (row_h + gap) + 10, width=140, height=32)
 
+######################################################################## end of New patient menu and begining of Personal details menu
 
+    btn5 = tk.Button(
+        right_frame,
+        text="Prescribe Meds",
+        width=12,
+        bg="white",
+        command=lambda: show_prescribe_meds()
+    )
+    btn5.pack(pady=10)
 
-    ##########################################
+    def show_prescribe_meds():
+        clear_left_frame()
+        show_home_button()
 
+        frame = tk.Frame(left_frame0, bg="light green")
+        frame.pack(fill="both", expand=True)
 
+        tk.Label(
+            frame,
+            text="Prescription Medications",
+            font=("Cascadia", 16, "bold"),
+            bg="light green"
+        ).pack(pady=(30,20),padx=(20,20))
+
+        # ---- Patient dropdown ----
+        tk.Label(frame, text="Select Patient:", bg="light green").pack(anchor="w", padx=20, pady=(20,0))
+        patient_var = tk.StringVar()
+        ttk.Combobox(
+            frame,
+            textvariable=patient_var,
+            values=[p.fullName for p in patientList],
+            state="readonly"
+        ).pack(padx=20, pady=(0,25))
+
+        # ---- Doctor (logged-in only) ----
+        tk.Label(frame, text="Doctor:", bg="light green").pack(anchor="w", padx=20, pady=(20,0))
+        doctor_var = tk.StringVar(value=doct.fullName)
+        ttk.Combobox(
+            frame,
+            textvariable=doctor_var,
+            values=[doct.fullName],
+            state="readonly"
+        ).pack(padx=20, pady=(0,25))
+
+        # ---- Medication dropdown ----
+        tk.Label(frame, text="Select Medication:", bg="light green").pack(anchor="w", padx=20, pady=(20,0))
+        med_var = tk.StringVar()
+        ttk.Combobox(
+            frame,
+            textvariable=med_var,
+            values=[m.MedName for m in medicationList],
+            state="readonly"
+        ).pack(padx=20, pady=(0,25))
+
+        def prescribe():
+            if not patient_var.get() or not med_var.get():
+                messagebox.showerror("Error", "Please select patient and medication")
+                return
+
+            selected_med = next(m for m in medicationList if m.MedName == med_var.get())
+
+            if selected_med.can_be_issued_by(doct):  ############################################### לסנן תרופות רק למה שבסמכות הרופא
+                messagebox.showinfo("Success", "Medication prescribed successfully")
+            else:
+                messagebox.showerror(
+                    "Authorization Error",
+                    "Doctor is not authorized to prescribe this medication"
+                )
+
+        tk.Button(
+            frame,
+            text="Prescribe",
+            bg="light blue",
+            font=("Arial", 12, "bold"),
+            command=prescribe
+        ).pack(pady=20)
+
+    ###########################################################################################################################
+    # sidebar button
     btn5 = tk.Button(right_frame, text="Personal details", width=12, bg="white", command=lambda: left_frame5())
     btn5.pack(pady=10)
 
     def left_frame5():
         clear_left_frame()
 
+        # new page and tital with placing
         frame = tk.Frame(left_frame0, bg="light green")
         frame.pack(fill="both", expand=True)
         show_home_button()
@@ -470,9 +552,9 @@ def build_home_screen(doct, home_frame, show_login):
         label_w = 160
         entry_w = 220
 
-        row_h = 30   # במקום height*0.08 (שגדול מדי)
-        gap   = 10
-        y0 = 60      # להתחיל מתחת לכותרת
+        row_h = 30
+        gap = 10
+        y0 = 60  # begin under tital
 
         def row(i, label, widget):
             y = y0 + i * (row_h + gap)
@@ -546,14 +628,74 @@ def build_home_screen(doct, home_frame, show_login):
         save_btn = tk.Button(frame, text="Save", bg="light green", font=("Arial", 12, "bold"), command=save_details)
         save_btn.place(x=ex, y=save_y, width=120, height=32)
 
+########################################################################################### end of Personal details menu
 
-
-
-    # Log out button (NOW WORKS)
+    # Log out button
     btn6 = tk.Button(right_frame, text="Log out", width=12, bg="white", command=show_login)
     btn6.pack(pady=10)  # vertical spacing
 
     return
+
+def init_medications():
+    return [
+
+        # ---------- Neurology ----------
+        Medication("Gabapentin", 3, "Neurology", "Nerve pain and seizures"),
+        Medication("Pregabalin", 2, "Neurology", "Neuropathic pain"),
+        Medication("Levetiracetam", 2, "Neurology", "Epilepsy treatment"),
+        Medication("Topiramate", 2, "Neurology", "Migraine prevention"),
+        Medication("Carbamazepine", 3, "Neurology", "Seizure control"),
+        Medication("Lamotrigine", 2, "Neurology", "Mood stabilization"),
+        Medication("Valproate", 2, "Neurology", "Seizure prevention"),
+        Medication("Baclofen", 3, "Neurology", "Muscle spasticity"),
+        Medication("Clonazepam", 1, "Neurology", "Seizures and anxiety"),
+        Medication("Donepezil", 1, "Neurology", "Alzheimer treatment"),
+        Medication("Memantine", 1, "Neurology", "Dementia treatment"),
+        Medication("Amantadine", 2, "Neurology", "Parkinson symptoms"),
+
+        # ---------- Cardiology ----------
+        Medication("Aspirin", 1, "Cardiology", "Blood thinner"),
+        Medication("Metoprolol", 2, "Cardiology", "Heart rate control"),
+        Medication("Atorvastatin", 1, "Cardiology", "Cholesterol reduction"),
+        Medication("Lisinopril", 1, "Cardiology", "Blood pressure control"),
+        Medication("Losartan", 1, "Cardiology", "Hypertension"),
+        Medication("Furosemide", 2, "Cardiology", "Fluid removal"),
+        Medication("Spironolactone", 1, "Cardiology", "Heart failure"),
+        Medication("Digoxin", 1, "Cardiology", "Heart contraction strength"),
+        Medication("Amlodipine", 1, "Cardiology", "Angina prevention"),
+        Medication("Clopidogrel", 1, "Cardiology", "Prevent blood clots"),
+        Medication("Warfarin", 1, "Cardiology", "Anticoagulant"),
+        Medication("Bisoprolol", 1, "Cardiology", "Heart rhythm control"),
+
+        # ---------- Orthopedics ----------
+        Medication("Ibuprofen", 3, "Orthopedics", "Pain and inflammation"),
+        Medication("Diclofenac", 2, "Orthopedics", "Joint inflammation"),
+        Medication("Naproxen", 2, "Orthopedics", "Arthritis pain"),
+        Medication("Celecoxib", 1, "Orthopedics", "Chronic joint pain"),
+        Medication("Tramadol", 2, "Orthopedics", "Moderate pain"),
+        Medication("Paracetamol", 3, "Orthopedics", "Mild pain"),
+        Medication("Meloxicam", 1, "Orthopedics", "Osteoarthritis"),
+        Medication("Etodolac", 2, "Orthopedics", "Inflammation"),
+        Medication("Methocarbamol", 2, "Orthopedics", "Muscle spasms"),
+        Medication("Tizanidine", 1, "Orthopedics", "Muscle relaxation"),
+        Medication("Glucosamine", 1, "Orthopedics", "Joint support"),
+        Medication("CalciumD3", 1, "Orthopedics", "Bone strength"),
+
+        # ---------- Dermatology ----------
+        Medication("Hydrocortisone", 2, "Dermatology", "Skin inflammation"),
+        Medication("Betamethasone", 1, "Dermatology", "Severe dermatitis"),
+        Medication("Clotrimazole", 2, "Dermatology", "Fungal infections"),
+        Medication("Ketoconazole", 1, "Dermatology", "Scalp treatment"),
+        Medication("Isotretinoin", 1, "Dermatology", "Severe acne"),
+        Medication("Tretinoin", 1, "Dermatology", "Acne and wrinkles"),
+        Medication("Adapalene", 1, "Dermatology", "Acne treatment"),
+        Medication("Mupirocin", 3, "Dermatology", "Bacterial skin infection"),
+        Medication("ErythromycinGel", 2, "Dermatology", "Acne antibiotic"),
+        Medication("Tacrolimus", 2, "Dermatology", "Eczema treatment"),
+        Medication("Calcipotriol", 1, "Dermatology", "Psoriasis treatment"),
+        Medication("UreaCream", 1, "Dermatology", "Dry skin repair"),
+    ]
+
 
 
 def main():
@@ -564,10 +706,14 @@ def main():
     doc2 = Doctor("Guy Marcus", "22", 30, 178, 74, "Heart surgeon", "22")
     doc3 = Doctor("Omry Hemo", "333333333", 34, 175, 70, "Orthopedist", "bone_doc")
     doc4 = Doctor("Almog Malka", "444444444", 26, 164, 62, "Dermatologist", "skin_on_skin")
+
+    # add new doctors to doctors database
     doctorList.append(doc1)
     doctorList.append(doc2)
     doctorList.append(doc3)
     doctorList.append(doc4)
+
+    # add doctors names to list of doctors names for drop down menues
     doctorNameList.append(doc1.fullName)
     doctorNameList.append(doc2.fullName)
     doctorNameList.append(doc3.fullName)
@@ -579,12 +725,14 @@ def main():
     pat2 = Patient("Stav Levi", "234567891", 37, 173, 70)
     pat3 = Patient("Liel Ben David", "345678912", 42, 165, 63)
     pat4 = Patient("Eliran Keren", "456789123", 48, 197, 95)
+
+    # add patient to patients database
     patientList.append(pat1)
     patientList.append(pat2)
     patientList.append(pat3)
     patientList.append(pat4)
 
-    # define preliminary treatments
+    # define preliminary treatments and register treatments to both treating doctor and treated patients
     # treatName(str), treatReason(str), treatArea(str), Doctor(Doctor), Patient(Patient)
     treat1 = Treatment("Ablation (burning)", "Heart arrhythmias", "Left side of chest", doc2, pat1)
     pat1.addTreat(treat1)
@@ -598,12 +746,18 @@ def main():
     treat4 = Treatment("Final confirmation", "HNPP", "Nervous system", doc1, pat4)
     pat4.addTreat(treat4)
     doc1.addTreat(treat4)
+
+    # add treatments to treatments database
     treatmentList.append(treat1)
     treatmentList.append(treat2)
     treatmentList.append(treat3)
     treatmentList.append(treat4)
 
-    #################################################################### end of preliminary definitions and beginning of login page definition
+    # create Medication database
+    global medicationList
+    medicationList = init_medications()
+
+    ######################################################################## end of preliminary definitions and beginning of login page definition
 
     # login page definition (SINGLE WINDOW)
     root = tk.Tk()
@@ -618,7 +772,8 @@ def main():
     login_frame.pack(fill="both", expand=True)
 
     # login page design
-    logimg = Image.open("final project\\LoginPage_image.png")
+    logimg = Image.open(r"C:\Users\USER\Desktop\C programs\first semester fourth year - prev syber security\final project\LoginPage_image.png")
+
     logimg = logimg.resize((220, 220))
     welcome_logo = ImageTk.PhotoImage(logimg)
     img_label = tk.Label(login_frame, image=welcome_logo, borderwidth=0, bg="white")
@@ -661,6 +816,7 @@ def main():
     EntButton.place(x=220, y=400)
 
     root.mainloop()
+
 
 if __name__ == "__main__":
     main()
