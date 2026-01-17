@@ -703,10 +703,10 @@ def main():
 
     # defining preliminary users
     # fullName(str), id(str), age(int), height(int), weight(int), speciality(str), password(str)
-    doc1 = Doctor("Eden Vilinsky", "11", 28, 183, 78, "Neurologist", "11")
-    doc2 = Doctor("Guy Marcus", "22", 30, 178, 74, "Heart surgeon", "22")
-    doc3 = Doctor("Omry Hemo", "333333333", 34, 175, 70, "Orthopedist", "bone_doc")
-    doc4 = Doctor("Almog Malka", "444444444", 26, 164, 62, "Dermatologist", "skin_on_skin")
+    doc1 = Doctor("Eden Vilinsky", "11", 28, 183, 78, "Neurology", "11")
+    doc2 = Doctor("Guy Marcus", "22", 30, 178, 74, "Cardiology", "22")
+    doc3 = Doctor("Omry Hemo", "333333333", 34, 175, 70, "Orthopedics", "bone_doc")
+    doc4 = Doctor("Almog Malka", "444444444", 26, 164, 62, "Dermatology", "skin_on_skin")
 
     # add new doctors to doctors database
     doctorList.append(doc1)
